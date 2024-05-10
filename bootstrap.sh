@@ -7,14 +7,11 @@ if [ -f "$ENV_FILE" ]; then
 fi
 
 # Validate required environment variables
-if [ -z "$ROOT_PASSWORD" ] || [ -z "$GITHUB_USERNAME" ] || [ -z "$GITHUB_EMAIL" ] || [ -z "$GITHUB_TOKEN" ]; then
+if [ -z "$ROOT_PASSWORD" ] || [ -z "$LINUX_USERNAME" ] || [ -z "$LINUX_PASSWORD" ] || [ -z "$GITHUB_USERNAME" ] || [ -z "$GITHUB_EMAIL" ] || [ -z "$GITHUB_TOKEN" ]; then
     echo "Error: Missing required environment variables."
-    echo "Make sure to provide ROOT_PASSWORD, GITHUB_USERNAME, GITHUB_EMAIL, and GITHUB_TOKEN in the .env file."
+    echo "Make sure to provide ROOT_PASSWORD, LINUX_USERNAME, LINUX_PASSWORD, GITHUB_USERNAME, GITHUB_EMAIL, and GITHUB_TOKEN in the .env file."
     exit 1
 fi
-
-# Create a new password for the root user
-echo "root:$ROOT_PASSWORD" | sudo chpasswd
 
 # Update and upgrade the system
 sudo apt update && sudo apt upgrade -y
@@ -40,7 +37,7 @@ sudo apt install -y \
 # Set up Zsh as the default shell
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 git clone https://github.com/romkatv/powerlevel10k.git $ZSH_CUSTOM/themes/powerlevel10k
-chsh -s $(which zsh)
+chsh -s $(which zsh) $LINUX_USERNAME
 
 # Install Zsh plugins
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
@@ -93,7 +90,7 @@ nvm install node
 
 # Install and configure PostgreSQL
 sudo service postgresql start
-sudo -u postgres psql -c "CREATE USER $USER WITH SUPERUSER PASSWORD '$ROOT_PASSWORD';"
+sudo -u postgres psql -c "CREATE USER $LINUX_USERNAME WITH SUPERUSER PASSWORD '$LINUX_PASSWORD';"
 sudo -u postgres createdb opengpts
 sudo -u postgres psql -c "CREATE EXTENSION IF NOT EXISTS vector;"
 

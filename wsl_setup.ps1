@@ -1,3 +1,4 @@
+# TODO: Adapt https://stackoverflow.com/questions/75157456/control-wsl-installation-from-powershell-script
 # PowerShell script to set up a new WSL distribution and execute the Linux bootstrap script
 param (
     [string]$ConfigFile = ".\config.yaml"
@@ -24,6 +25,8 @@ $config = Parse-Yaml -FilePath $ConfigFile
 $distroName = $config.wsl_distro
 $credentials = $config.credentials
 $rootPassword = $credentials.root_password
+$linuxUsername = $credentials.linux_username
+$linuxPassword = $credentials.linux_password
 $githubUsername = $credentials.github_username
 $githubEmail = $credentials.github_email
 $githubToken = $credentials.github_token
@@ -33,6 +36,8 @@ $envFilePath = ".\.env"
 $envVars = $config.env_vars | ForEach-Object { "$($_.Name)=$($_.Value)" }
 $envContent = @"
 ROOT_PASSWORD=$rootPassword
+LINUX_USERNAME=$linuxUsername
+LINUX_PASSWORD=$linuxPassword
 GITHUB_USERNAME=$githubUsername
 GITHUB_EMAIL=$githubEmail
 GITHUB_TOKEN=$githubToken
@@ -55,12 +60,28 @@ $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $bootstrapScriptPath = Join-Path $scriptDir "bootstrap.sh"
 
 # Ensure the bootstrap script is executable
-wsl -d $distroName chmod +x /mnt/c/$($bootstrapScriptPath -replace ":", "").replace("\", "/")
+$bootstrapScriptWSLPath = "/mnt/c/$(($bootstrapScriptPath -replace ':', '') -replace '\\', '/')"
+wsl -d $distroName chmod +x $bootstrapScriptWSLPath
 
 # Copy the environment file to WSL
-wsl -d $distroName cp /mnt/c/$($envFilePath -replace ":", "").replace("\", "/") /mnt/c/$($scriptDir -replace ":", "").replace("\", "/")
+$envFileWSLPath = "/mnt/c/$(($envFilePath -replace ':', '') -replace('\\', '/'))"
+$scriptDirWSLPath = "/mnt/c/$(($scriptDir -replace ':', '') -replace('\\', '/'))"
+wsl -d $distroName cp $envFileWSLPath $scriptDirWSLPath
+
+# Create the default user with the specified username and password
+Write-Output "Setting up the default user: $linuxUsername"
+$createUserCommand = @"
+useradd -m -s /bin/bash $linuxUsername && echo '${linuxUsername}:$linuxPassword' | chpasswd && usermod -aG sudo $linuxUsername && echo '%sudo ALL=(ALL:ALL) NOPASSWD:ALL' >> /etc/sudoers
+"@
+wsl -d $distroName -u root /bin/bash -c $createUserCommand
+
+# Set the new user as the default for the distribution
+$setDefaultUserCommand = @"
+echo '[user]\ndefault = $linuxUsername' > /etc/wsl.conf
+"@
+wsl -d $distroName -u root /bin/bash -c $setDefaultUserCommand
 
 # Run the bootstrap script inside WSL
-wsl -d $distroName /mnt/c/$($bootstrapScriptPath -replace ":", "").replace("\", "/")
+wsl -d $distroName -u $linuxUsername $bootstrapScriptWSLPath
 
 Write-Output "WSL setup complete!"

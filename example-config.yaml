@@ -2,7 +2,9 @@
 wsl_distro: "Ubuntu-24.04"
 
 credentials:
-  root_password: "your_root_password"
+  linux_username: "your_linux_username"
+  linux_password: "your-password-here"
+  root_password: "your-root-password-here"
   github_username: "your_github_username"
   github_email: "your_email@example.com"
   github_token: "your_github_token"
