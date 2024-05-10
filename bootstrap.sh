@@ -1,20 +1,17 @@
 #!/bin/bash
 
-# Function to ask for user input and set environment variables
-read_var() {
-    local prompt=$1
-    local varname=$2
-    local default_value=$3
+# Load environment variables from .env file
+ENV_FILE="$(dirname "$0")/.env"
+if [ -f "$ENV_FILE" ]; then
+    export $(grep -v '^#' "$ENV_FILE" | xargs)
+fi
 
-    read -p "$prompt [$default_value]: " input_value
-    export $varname="${input_value:-$default_value}"
-}
-
-# Prompt for user credentials and environment settings
-read_var "Enter root password" "ROOT_PASSWORD" "default_root_password"
-read_var "Enter your GitHub username" "GITHUB_USERNAME" "your_github_username"
-read_var "Enter your GitHub email" "GITHUB_EMAIL" "your_email@example.com"
-read_var "Enter your GitHub Personal Access Token" "GITHUB_TOKEN" "your_github_token"
+# Validate required environment variables
+if [ -z "$ROOT_PASSWORD" ] || [ -z "$GITHUB_USERNAME" ] || [ -z "$GITHUB_EMAIL" ] || [ -z "$GITHUB_TOKEN" ]; then
+    echo "Error: Missing required environment variables."
+    echo "Make sure to provide ROOT_PASSWORD, GITHUB_USERNAME, GITHUB_EMAIL, and GITHUB_TOKEN in the .env file."
+    exit 1
+fi
 
 # Create a new password for the root user
 echo "root:$ROOT_PASSWORD" | sudo chpasswd
@@ -89,7 +86,7 @@ pyenv global 3.11.0
 brew install golang-migrate
 
 # Install NVM and Node.js
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 nvm install node
@@ -110,6 +107,17 @@ cat <<EOL >> ~/.git-credentials
 https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com
 EOL
 
+# Persist environment variables in ~/.zshrc
+cat <<EOL >> ~/.zshrc
+
+# Load environment variables from .env file
+if [ -f "$HOME/.env" ]; then
+    export \$(grep -v '^#' "$HOME/.env" | xargs)
+fi
+EOL
+
+# Copy the .env file to the home directory
+cp "$ENV_FILE" "$HOME/.env"
+
 # Final message
 echo "Bootstrap script complete! You may need to restart your terminal for all changes to take effect."
-

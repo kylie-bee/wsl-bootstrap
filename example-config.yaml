@@ -1,0 +1,13 @@
+# Configuration file for the WSL setup, change name to config.yaml and replace keys with your own values
+wsl_distro: "Ubuntu-24.04"
+
+credentials:
+  root_password: "your_root_password"
+  github_username: "your_github_username"
+  github_email: "your_email@example.com"
+  github_token: "your_github_token"
+
+env_vars:
+  MY_API_KEY: "abc123"
+  DJANGO_SECRET_KEY: "xyz456"
+  OTHER_VAR: "value789"
