@@ -206,5 +206,8 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 nvm install 20
 
+# Install other tools
+brew install unzip
+
 # Set the default shell to Zsh, which will end the script
 chsh -s $(which zsh)
