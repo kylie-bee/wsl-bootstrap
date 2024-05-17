@@ -209,5 +209,11 @@ nvm install 20
 # Install other tools
 brew install unzip
 
+# Configure other settings in .zshrc
+cat <<EOL >> $USER_HOME/.zshrc
+HISTSIZE=10000
+SAVEHIST=10000
+EOL
+
 # Set the default shell to Zsh, which will end the script
 chsh -s $(which zsh)
