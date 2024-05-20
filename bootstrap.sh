@@ -209,6 +209,14 @@ nvm install 20
 # Install other tools
 brew install unzip
 
+# Install rcc
+curl -o rcc https://downloads.robocorp.com/rcc/releases/latest/linux64/rcc
+chmod a+x rcc
+sudo mv rcc /usr/local/bin
+# Set zsh completions for rcc
+echo "autoload -U compinit; compinit" >> ~/.zshrc
+rcc completion zsh > "${fpath[1]}/_rcc"
+
 # Configure other settings in .zshrc
 cat <<EOL >> $USER_HOME/.zshrc
 HISTSIZE=10000
