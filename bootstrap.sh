@@ -32,6 +32,7 @@ sudo apt install -y git gcc make build-essential zsh libssl-dev zlib1g-dev \
 
 # install chromium
 sudo snap install chromium
+sudo snap install gitkraken --classic
 
 # Set up Zsh
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
