@@ -9,7 +9,7 @@ You must ensure the `.env` file is in the user's home directory before running t
 To install a fresh WSL instance, run the following command:
 
 ```powershell
-wsl --install <DistroName>
+wsl --install -d <DistroName>
 ```
 
 Then, copy the `.env` file to the user's home directory by running the following command (assuming you are in the root of the repo):
