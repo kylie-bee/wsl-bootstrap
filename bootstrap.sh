@@ -209,6 +209,7 @@ nvm install 20
 
 # Install other tools
 brew install unzip
+brew install dos2unix
 
 # Install rcc
 curl -o rcc https://downloads.robocorp.com/rcc/releases/latest/linux64/rcc
