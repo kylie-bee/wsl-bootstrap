@@ -1,4 +1,5 @@
 #!/bin/bash
 
 # Load the .env file
-export $(grep -v '^#' .env | xargs)
+env_file="${1:-.env}"
+export $(grep -v '^#' "$env_file" | xargs)
