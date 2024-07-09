@@ -9,7 +9,7 @@ You must ensure the `.env` file is in the user's home directory before running t
 To install a fresh WSL instance, run the following command:
 
 ```powershell
-wsl --install <DistroName>
+wsl --install -d <DistroName>
 ```
 
 Then, copy the `.env` file to the user's home directory by running the following command (assuming you are in the root of the repo):
@@ -39,3 +39,10 @@ wsl --unregister <DistroName>
 ```
 
 > In some cases, you must uninstall from the `Add or remove programs` settings to remove the distro completely.
+
+It is recommended you set WSL to use mirror mode for networking as this simplifies development. You can do this by creating a `.wslconfig` file in the user's home directory with the following content:
+
+```ini
+[wsl2]
+networkingMode=mirrored
+```
