@@ -211,6 +211,7 @@ nvm install 20
 brew install unzip
 brew install dos2unix
 brew install gh
+brew install go
 
 # Install rcc
 curl -o rcc https://downloads.robocorp.com/rcc/releases/latest/linux64/rcc
