@@ -211,7 +211,10 @@ nvm install 20
 brew install unzip
 brew install dos2unix
 brew install gh
+
+# Install Go and go tools
 brew install go
+$(brew --prefix)/opt/go/libexec/bin/go install github.com/ptgoetz/go-versionbump/cmd/versionbump@latest
 
 # Install rcc
 curl -o rcc https://downloads.robocorp.com/rcc/releases/latest/linux64/rcc
