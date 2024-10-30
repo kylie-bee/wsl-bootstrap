@@ -28,7 +28,7 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install -y git gcc make build-essential zsh libssl-dev zlib1g-dev \
     libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
     libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
-    htop software-properties-common libpq-dev \
+    htop software-properties-common libpq-dev wslu \
 
 # install chromium
 sudo snap install chromium
@@ -228,6 +228,7 @@ rcc completion zsh > "${fpath[1]}/_rcc"
 cat <<EOL >> $USER_HOME/.zshrc
 HISTSIZE=10000
 SAVEHIST=10000
+BROWSER=wslview
 EOL
 
 # Set the default shell to Zsh, which will end the script
